@@ -7,7 +7,7 @@ export function Message(props) {
 
 const mapStateToProps = (state) => {
   return {
-    infoMessage: state.infoMessage.message,
+    message: state.infoMessage,
   };
 };
 export default connect(mapStateToProps)(Message);

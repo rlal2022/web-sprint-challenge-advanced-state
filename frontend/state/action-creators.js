@@ -15,22 +15,23 @@ export function moveClockwise() {
 }
 
 export function moveCounterClockwise() {
-  type: MOVE_COUNTERCLOCKWISE;
+  return { type: MOVE_COUNTERCLOCKWISE };
 }
 
-export function selectAnswer(answerId) {
-  return { type: SET_SELECTED_ANSWER, payload: answerId };
+export function selectAnswer(answer) {
+  return { type: SET_SELECTED_ANSWER, payload: answer };
 }
 
 export function setMessage(message) {
   return { type: SET_INFO_MESSAGE, payload: message };
 }
 
-export function setQuiz(question) {
-  return { type: SET_QUIZ_INTO_STATE, payload: question };
+export function setQuiz(quiz) {
+  return { type: SET_QUIZ_INTO_STATE, payload: quiz };
 }
 
 export function inputChange(evt) {
+  console.log(evt);
   return { type: INPUT_CHANGE, payload: evt };
 }
 
@@ -44,24 +45,28 @@ export function fetchQuiz() {
     axios
       .get("http://localhost:9000/api/quiz/next")
       .then((res) => {
+        dispatch(setQuiz(null));
         dispatch(setQuiz(res.data));
       })
       .catch((err) => {
         console.log(err);
-      });
+      }, []);
 
     // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
     // On successful GET:
     // - Dispatch an action to send the obtained quiz to its state
   };
 }
-export function postAnswer(ans) {
+export function postAnswer(payload) {
   return function (dispatch) {
-    axios.post(`http://localhost:9000/api/quiz/answer`, ans).then((res) => {
-      dispatch(fetchQuiz());
-      dispatch(selectAnswer(null));
-      dispatch(setMessage(res.data.message));
-    });
+    axios
+      .post(`http://localhost:9000/api/quiz/answer`, payload)
+      .then((res) => {
+        dispatch(fetchQuiz());
+        dispatch(selectAnswer(null));
+        dispatch(setMessage(res.data.message));
+      })
+      .catch((err) => console.log(err));
 
     // On successful POST:
     // - Dispatch an action to reset the selected answer state
@@ -69,17 +74,22 @@ export function postAnswer(ans) {
     // - Dispatch the fetching of the next quiz
   };
 }
-export function postQuiz(question) {
+export function postQuiz(addQuestion) {
+  console.log(addQuestion.newQuestion);
   return function (dispatch) {
     axios
-      .post(`http://localhost:9000/api/quiz/new`, question)
+      .post(`http://localhost:9000/api/quiz/new`, {
+        question_text: addQuestion.newQuestion,
+        true_answer_text: addQuestion.newTrueAnswer,
+        false_answer_text: addQuestion.newFalseAnswer,
+      })
       .then((res) => {
         dispatch(
-          setMessage(`Congrats: ${res.data.question} is a great question!`)
+          setMessage(`Congrats: "${res.data.question}" is a great question!`)
         );
         dispatch(resetForm());
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.log(err));
   };
 }
 

@@ -1,11 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { inputChange, postQuiz, resetForm } from "../state/action-creators";
+import { inputChange, resetForm, postQuiz } from "../state/action-creators";
 // import * as actionCreators from "../state/action-creators";
 
 export function Form(props) {
-  const { inputChange, postQuiz, newQuestion, newTrueAnswer, newFalseAnswer } =
-    props;
+  const { inputChange, postQuiz, form } = props;
 
   const onChange = (evt) => {
     inputChange({ [evt.target.id]: evt.target.value });
@@ -13,13 +12,14 @@ export function Form(props) {
 
   const onSubmit = (evt) => {
     evt.preventDefault();
-    postQuiz({
-      questions_text: newQuestion,
-      true_answer_text: newTrueAnswer,
-      false_answer_text: newFalseAnswer,
-    });
+    postQuiz(form);
     resetForm();
   };
+
+  const formDisabled =
+    form.newQuestion.trim().length > 0 &&
+    form.newTrueAnswer.trim().length > 0 &&
+    form.newFalseAnswer.trim().length > 0;
 
   return (
     <form id="form" onSubmit={onSubmit}>
@@ -28,35 +28,33 @@ export function Form(props) {
         maxLength={50}
         onChange={onChange}
         id="newQuestion"
-        value={newQuestion}
+        value={form.newQuestion}
         placeholder="Enter question"
       />
       <input
         maxLength={50}
         onChange={onChange}
         id="newTrueAnswer"
-        value={newTrueAnswer}
+        value={form.newTrueAnswer}
         placeholder="Enter true answer"
       />
       <input
         maxLength={50}
         onChange={onChange}
         id="newFalseAnswer"
-        value={newFalseAnswer}
+        value={form.newFalseAnswer}
         placeholder="Enter false answer"
       />
-      <button id="submitNewQuizBtn" onClick={onSubmit}>
+      <button id="submitNewQuizBtn" disabled={!formDisabled}>
         Submit new quiz
       </button>
     </form>
   );
 }
 const mapStateToProps = (state) => {
+  console.log(mapStateToProps);
   return {
-    state: state,
-    newQuestion: state.form.newQuestion,
-    newTrueAnswer: state.form.newTrueAnswer,
-    newFalseAnswer: state.form.newFalseAnswer,
+    form: state.form,
   };
 };
 
