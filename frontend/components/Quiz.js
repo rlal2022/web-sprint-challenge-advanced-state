@@ -26,7 +26,7 @@ export function Quiz(props) {
       quiz_id: quiz.quiz_id,
       answer_id: answer,
     };
-    // postAnswer({ quiz_id: quiz.quiz_id, answer_Id: answer });
+    console.log(payload);
     postAnswer(payload);
   };
 
