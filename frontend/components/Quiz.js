@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { fetchQuiz, selectAnswer, setQuiz } from "../state/action-creators";
+import {
+  fetchQuiz,
+  selectAnswer,
+  setQuiz,
+  postAnswer,
+  postQuiz,
+} from "../state/action-creators";
 import { connect } from "react-redux";
 
 export function Quiz(props) {
@@ -16,7 +22,12 @@ export function Quiz(props) {
   };
 
   const handleSubmit = () => {
-    postAnswer({ quiz_id: quiz.quiz_id, answer_Id: answer });
+    const payload = {
+      quiz_id: quiz.quiz_id,
+      answer_id: answer,
+    };
+    // postAnswer({ quiz_id: quiz.quiz_id, answer_Id: answer });
+    postAnswer(payload);
   };
 
   return (
@@ -83,4 +94,6 @@ export default connect(mapStateToProps, {
   fetchQuiz,
   selectAnswer,
   setQuiz,
+  postAnswer,
+  postQuiz,
 })(Quiz);

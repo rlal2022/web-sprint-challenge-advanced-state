@@ -18,8 +18,8 @@ export function moveCounterClockwise() {
   return { type: MOVE_COUNTERCLOCKWISE };
 }
 
-export function selectAnswer(answer) {
-  return { type: SET_SELECTED_ANSWER, payload: answer };
+export function selectAnswer(payload) {
+  return { type: SET_SELECTED_ANSWER, payload: payload };
 }
 
 export function setMessage(message) {
